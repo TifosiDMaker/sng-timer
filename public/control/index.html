@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>SNG Timer Control</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .control-layout {
+        display: grid;
+        gap: 18px;
+      }
+
+      .control-hero {
+        padding: 26px 24px 24px;
+        background:
+          linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
+      }
+
+      .control-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .control-kicker {
+        margin-bottom: 10px;
+      }
+
+      .control-title {
+        margin: 0;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(2.5rem, 9vw, 4rem);
+        line-height: 0.95;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #f6e9c7;
+      }
+
+      .control-subtitle {
+        margin: 14px 0 0;
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.68);
+      }
+
+      .control-level-strip {
+        margin-top: 22px;
+        padding: 14px 16px;
+        border: 1px solid rgba(212, 175, 92, 0.18);
+        background: rgba(255, 239, 195, 0.04);
+        text-align: center;
+      }
+
+      .control-level-strip strong {
+        display: block;
+        margin-top: 8px;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(1.8rem, 6vw, 3rem);
+        line-height: 0.96;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #f7ebcd;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .section-title {
+        margin: 0 0 16px;
+        font-size: 0.88rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .status-item {
+        padding: 14px 14px 16px;
+        border-radius: 14px;
+        background: var(--panel-strong);
+        border: 1px solid rgba(212, 175, 92, 0.16);
+      }
+
+      .status-item strong {
+        display: block;
+        margin-top: 10px;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: 1.7rem;
+        line-height: 0.98;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #f7ebcd;
+      }
+
+      .status-item strong.danger-text {
+        color: #d84a4a;
+        text-shadow: 0 0 18px rgba(216, 74, 74, 0.22);
+      }
+
+      .primary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .primary-grid .action-button {
+        min-height: 96px;
+      }
+
+      .primary-grid .primary-reset {
+        min-height: 124px;
+        font-size: 1.14rem;
+        grid-column: 1 / -1;
+      }
+
+      .management-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .status-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .note {
+        margin-top: 12px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+
+      .section-frame {
+        padding-top: 16px;
+        border-top: 1px solid rgba(212, 175, 92, 0.14);
+      }
+
+      .management-grid .action-button:last-child {
+        grid-column: 1 / -1;
+      }
+
+      @media (max-width: 640px) {
+        .control-top {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .primary-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page control-layout">
+      <section class="card control-hero">
+        <div class="control-top">
+          <div>
+            <div class="label control-kicker">Tournament Control</div>
+            <h1 class="control-title">SNG Console</h1>
+            <div class="control-subtitle">Black Gold Broadcast Control Deck</div>
+          </div>
+          <div id="statusText" class="status-pill waiting">waiting</div>
+        </div>
+        <div class="control-level-strip">
+          <span class="label">Current Blind Level</span>
+          <strong id="blindText">10 / 20 / 0</strong>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="status-header">
+          <h2 class="section-title">Live Status</h2>
+        </div>
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="label">Level</span>
+            <strong id="levelText">Level 1</strong>
+          </div>
+          <div class="status-item">
+            <span class="label">Players Left</span>
+            <strong id="alivePlayers">6</strong>
+          </div>
+          <div class="status-item">
+            <span class="label">Level Clock</span>
+            <strong id="levelTimer">10:00</strong>
+          </div>
+          <div class="status-item">
+            <span class="label">Action Clock</span>
+            <strong id="thinkingTimer">00:20</strong>
+          </div>
+          <div class="status-item">
+            <span class="label">Time Card</span>
+            <strong id="timeCardText">+30 秒</strong>
+          </div>
+          <div class="status-item">
+            <span class="label">Blind Format</span>
+            <strong>SB / BB / ANTE</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <h2 class="section-title">Primary Actions</h2>
+        <div class="section-frame">
+          <div class="primary-grid">
+            <button class="action-button success primary-reset" data-event="resetThinking">Reset Thinking And Start</button>
+            <button class="action-button success" data-event="useTimeCard">Use Time Card</button>
+            <button class="action-button success" data-event="playerAdd">Player +1</button>
+            <button class="action-button danger" id="playerRemoveBtn">Player -1</button>
+          </div>
+          <div class="note">Thinking clock follows reset action and tournament pause or resume.</div>
+        </div>
+      </section>
+
+      <details class="card" open>
+        <summary>Management</summary>
+        <div class="details-body">
+          <div class="management-grid">
+            <button class="action-button success" data-event="startTournament">Start Tournament</button>
+            <button class="action-button warning" id="toggleTournamentBtn">Pause Tournament</button>
+            <button class="action-button secondary" data-event="prevLevel">Previous Level</button>
+            <button class="action-button secondary" data-event="nextLevel">Next Level</button>
+            <button class="action-button danger" id="resetTournamentBtn">Reset Tournament</button>
+          </div>
+        </div>
+      </details>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.js"></script>
+    <script>
+      const levelText = document.getElementById("levelText");
+      const blindText = document.getElementById("blindText");
+      const statusText = document.getElementById("statusText");
+      const levelTimer = document.getElementById("levelTimer");
+      const thinkingTimer = document.getElementById("thinkingTimer");
+      const alivePlayers = document.getElementById("alivePlayers");
+      const timeCardText = document.getElementById("timeCardText");
+      const toggleTournamentBtn = document.getElementById("toggleTournamentBtn");
+      const resetTournamentBtn = document.getElementById("resetTournamentBtn");
+      const playerRemoveBtn = document.getElementById("playerRemoveBtn");
+
+      let latestState = null;
+
+      function emitEvent(eventName) {
+        socket.emit(eventName);
+      }
+
+      document.querySelectorAll("[data-event]").forEach((button) => {
+        button.addEventListener("click", () => {
+          emitEvent(button.dataset.event);
+        });
+      });
+
+      toggleTournamentBtn.addEventListener("click", () => {
+        if (!latestState) return;
+        const eventName = latestState.tournamentStatus === "running" ? "pauseTournament" : "resumeTournament";
+        emitEvent(eventName);
+      });
+
+      resetTournamentBtn.addEventListener("click", () => {
+        const confirmed = window.confirm("确认重置整场比赛吗？这会恢复所有计时与盲注状态。");
+        if (confirmed) {
+          emitEvent("resetTournament");
+        }
+      });
+
+      playerRemoveBtn.addEventListener("click", () => {
+        if (!latestState || latestState.alivePlayers <= 0) return;
+        const confirmed = window.confirm("确认存活玩家 -1 吗？");
+        if (confirmed) {
+          emitEvent("playerRemove");
+        }
+      });
+
+      function render(state) {
+        latestState = state;
+
+        levelText.textContent = `Level ${state.currentLevel.level}`;
+        blindText.textContent = `${state.currentLevel.sb} / ${state.currentLevel.bb} / ${state.currentLevel.ante}`;
+        statusText.textContent = state.tournamentStatus;
+        statusText.className = `status-pill ${state.tournamentStatus}`;
+        levelTimer.textContent = formatTime(state.levelRemaining);
+        thinkingTimer.textContent = formatTime(state.thinkingRemaining);
+        alivePlayers.textContent = state.alivePlayers;
+        timeCardText.textContent = `+${state.timeCardExtra} 秒`;
+        thinkingTimer.classList.toggle(
+          "danger-text",
+          state.thinkingRemaining <= 3
+        );
+
+        toggleTournamentBtn.textContent = state.tournamentStatus === "running" ? "暂停比赛" : "继续比赛";
+        toggleTournamentBtn.disabled = state.tournamentStatus === "waiting" || state.tournamentStatus === "ended";
+      }
+
+      bindState(render);
+    </script>
+  </body>
+</html>

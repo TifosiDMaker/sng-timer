@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNG Timer Display</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .display-layout {
+        display: grid;
+        gap: 22px;
+      }
+
+      .hero {
+        padding: 34px 38px 30px;
+        text-align: center;
+        background:
+          linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
+      }
+
+      .hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .title-block {
+        text-align: left;
+      }
+
+      .title-block .label {
+        margin-bottom: 10px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(3rem, 6vw, 5.8rem);
+        line-height: 0.95;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #f6e9c7;
+      }
+
+      .hero-right {
+        display: grid;
+        justify-items: end;
+        gap: 14px;
+      }
+
+      .series-tag {
+        padding: 10px 14px;
+        border: 1px solid rgba(212, 175, 92, 0.2);
+        background: rgba(255, 239, 195, 0.04);
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.78);
+      }
+
+      .blinds {
+        margin-top: 24px;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(3rem, 8vw, 6.4rem);
+        font-weight: 800;
+        line-height: 0.95;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #f7ebcd;
+        text-shadow: 0 0 22px rgba(212, 175, 92, 0.12);
+      }
+
+      .hero-foot {
+        margin-top: 16px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .blind-caption {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border: 1px solid rgba(212, 175, 92, 0.16);
+        background: rgba(255, 239, 195, 0.04);
+        font-size: 0.86rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.72);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .stat-card {
+        padding: 24px 24px 28px;
+        text-align: center;
+        background:
+          linear-gradient(180deg, rgba(15, 14, 11, 0.98), rgba(9, 9, 10, 0.98));
+      }
+
+      .stat-card .label {
+        margin-bottom: 14px;
+        font-size: 0.92rem;
+      }
+
+      .stat-frame {
+        padding-top: 18px;
+        border-top: 1px solid rgba(212, 175, 92, 0.18);
+      }
+
+      .stat-card .big-timer {
+        color: #f7ebcd;
+      }
+
+      .stat-card .big-timer.danger-text {
+        color: #d84a4a;
+        text-shadow: 0 0 18px rgba(216, 74, 74, 0.22);
+      }
+
+      .stat-note {
+        margin-top: 12px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.54);
+      }
+
+      .pause-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(circle at 50% 22%, rgba(210, 163, 84, 0.08), transparent 28%),
+          radial-gradient(circle at 50% 100%, rgba(210, 163, 84, 0.08), transparent 32%),
+          linear-gradient(180deg, rgba(3, 4, 7, 0.9), rgba(2, 2, 4, 0.96));
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease;
+        z-index: 40;
+      }
+
+      .pause-overlay.visible {
+        opacity: 1;
+      }
+
+      .pause-backdrop {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .pause-backdrop::before,
+      .pause-backdrop::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        border: 1px solid rgba(212, 175, 92, 0.14);
+      }
+
+      .pause-backdrop::before {
+        top: 11%;
+        width: min(92vw, 1180px);
+        height: min(92vw, 1180px);
+      }
+
+      .pause-backdrop::after {
+        bottom: -48%;
+        width: min(110vw, 1480px);
+        height: min(110vw, 1480px);
+        opacity: 0.55;
+      }
+
+      .pause-content {
+        position: relative;
+        width: min(92vw, 1180px);
+        min-height: min(88vh, 820px);
+        display: grid;
+        grid-template-rows: auto 1fr auto auto;
+        align-items: center;
+        justify-items: center;
+        padding: 54px 56px 40px;
+        text-align: center;
+      }
+
+      .pause-title-group {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .pause-kicker {
+        width: min(120px, 20vw);
+        height: 2px;
+        background: linear-gradient(90deg, rgba(212, 175, 92, 0), rgba(212, 175, 92, 0.92), rgba(212, 175, 92, 0));
+      }
+
+      .pause-title {
+        margin: 0;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(3.6rem, 8vw, 7.2rem);
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #f5e3b4;
+        text-shadow: 0 0 22px rgba(212, 175, 92, 0.14);
+      }
+
+      .pause-subtitle {
+        margin: 0;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        font-size: clamp(0.95rem, 1.45vw, 1.15rem);
+        font-weight: 600;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.72);
+      }
+
+      .earnings-panel {
+        position: relative;
+        width: min(68vw, 720px);
+        padding: 24px 28px 24px;
+        border: 1px solid rgba(212, 175, 92, 0.42);
+        background:
+          linear-gradient(180deg, rgba(12, 12, 14, 0.92), rgba(5, 5, 7, 0.96));
+        box-shadow:
+          inset 0 1px 0 rgba(255, 240, 198, 0.08),
+          0 20px 60px rgba(0, 0, 0, 0.44);
+      }
+
+      .earnings-panel::before,
+      .earnings-panel::after {
+        content: "";
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(212, 175, 92, 0), rgba(212, 175, 92, 0.9), rgba(212, 175, 92, 0));
+      }
+
+      .earnings-panel::before {
+        top: 12px;
+      }
+
+      .earnings-panel::after {
+        bottom: 12px;
+      }
+
+      .earnings-label {
+        margin: 0 0 10px;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        font-size: clamp(0.88rem, 1.2vw, 1rem);
+        font-weight: 700;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.74);
+      }
+
+      .earnings-divider {
+        width: min(180px, 24vw);
+        height: 1px;
+        margin: 0 auto 16px;
+        background: linear-gradient(90deg, rgba(212, 175, 92, 0), rgba(212, 175, 92, 0.92), rgba(212, 175, 92, 0));
+      }
+
+      .earnings-table-wrap {
+        margin-top: 8px;
+      }
+
+      .earnings-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      .earnings-table thead th {
+        padding: 8px 10px 10px;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.74);
+        border-bottom: 1px solid rgba(212, 175, 92, 0.3);
+      }
+
+      .earnings-table thead th:first-child,
+      .earnings-table tbody td:first-child {
+        text-align: left;
+      }
+
+      .earnings-table thead th:last-child,
+      .earnings-table tbody td:last-child {
+        text-align: right;
+      }
+
+      .earnings-table tbody tr {
+        border-bottom: 1px solid rgba(212, 175, 92, 0.12);
+      }
+
+      .earnings-table tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      .earnings-table tbody td {
+        padding: 12px 10px;
+        vertical-align: middle;
+      }
+
+      .earnings-player {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #f4e5be;
+      }
+
+      .earnings-amount {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(1.35rem, 2.6vw, 2rem);
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #f7ebcd;
+        text-shadow: 0 0 18px rgba(212, 175, 92, 0.14);
+      }
+
+      .blind-bar {
+        width: min(88vw, 980px);
+        padding: 16px 30px;
+        border: 1px solid rgba(38, 27, 8, 0.76);
+        background:
+          linear-gradient(180deg, #d7b36a 0%, #b98d3a 42%, #9f7427 100%);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 244, 216, 0.28),
+          0 16px 36px rgba(0, 0, 0, 0.28);
+      }
+
+      .blind-bar-text {
+        margin: 0;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        font-size: clamp(0.98rem, 1.45vw, 1.22rem);
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #130f09;
+      }
+
+      .sponsor-footer {
+        margin: 18px 0 0;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        font-size: clamp(0.78rem, 1vw, 0.92rem);
+        font-weight: 600;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.66);
+      }
+
+      @media (max-width: 900px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-top {
+          justify-content: center;
+        }
+
+        .title-block,
+        .hero-right {
+          text-align: center;
+          justify-items: center;
+        }
+
+        .pause-content {
+          width: min(96vw, 1180px);
+          min-height: min(92vh, 820px);
+          padding: 36px 18px 26px;
+        }
+
+        .earnings-panel,
+        .blind-bar {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page display-layout">
+      <section class="card hero">
+        <div class="hero-top">
+          <div class="title-block">
+            <div class="label">Current Level</div>
+            <h1 id="levelText">Level 1</h1>
+          </div>
+          <div class="hero-right">
+            <div class="series-tag">Zhaoyao Cup SNG Broadcast</div>
+            <div id="statusText" class="status-pill waiting">waiting</div>
+          </div>
+        </div>
+        <div class="blinds" id="blindText">10 / 20 / 0</div>
+        <div class="hero-foot">
+          <div class="blind-caption">SB / BB / ANTE</div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <article class="card stat-card">
+          <div class="label">Level Clock</div>
+          <div class="stat-frame">
+            <div class="big-timer" id="levelTimer">10:00</div>
+            <div class="stat-note">Blind Countdown</div>
+          </div>
+        </article>
+        <article class="card stat-card">
+          <div class="label">Action Clock</div>
+          <div class="stat-frame">
+            <div class="big-timer" id="thinkingTimer">00:20</div>
+            <div class="stat-note">Thinking Timer</div>
+          </div>
+        </article>
+        <article class="card stat-card">
+          <div class="label">Players Left</div>
+          <div class="stat-frame">
+            <div class="big-timer" id="alivePlayers">6</div>
+            <div class="stat-note">Alive Players</div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <div id="pauseOverlay" class="pause-overlay" aria-hidden="true">
+      <div class="pause-backdrop"></div>
+      <div class="pause-content">
+        <header class="pause-title-group">
+          <div class="pause-kicker"></div>
+          <h2 class="pause-title">CAREER EARNINGS</h2>
+          <p class="pause-subtitle">2026 ZHAOYAO CUP SNG SERIES</p>
+          <div class="pause-kicker"></div>
+        </header>
+
+        <section class="earnings-panel">
+          <p class="earnings-label">CAREER EARNINGS</p>
+          <div class="earnings-divider"></div>
+          <div class="earnings-table-wrap">
+            <table class="earnings-table">
+              <thead>
+                <tr>
+                  <th>PLAYER</th>
+                  <th>EARNINGS</th>
+                </tr>
+              </thead>
+              <tbody id="pauseEarningsBody">
+                <tr>
+                  <td class="earnings-player">ZHAO YAO</td>
+                  <td class="earnings-amount">CNY 12,800</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="blind-bar">
+          <p id="pauseBlindBarText" class="blind-bar-text">CURRENT BLIND LEVEL: LEVEL 1 - 10 / 20</p>
+        </section>
+
+        <footer class="sponsor-footer">VENUE PROVIDED BY ZHAOYAO TAPROOM</footer>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.js"></script>
+    <script>
+      const levelText = document.getElementById("levelText");
+      const blindText = document.getElementById("blindText");
+      const statusText = document.getElementById("statusText");
+      const levelTimer = document.getElementById("levelTimer");
+      const thinkingTimer = document.getElementById("thinkingTimer");
+      const alivePlayers = document.getElementById("alivePlayers");
+      const pauseOverlay = document.getElementById("pauseOverlay");
+      const pauseEarningsBody = document.getElementById("pauseEarningsBody");
+      const pauseBlindBarText = document.getElementById("pauseBlindBarText");
+      let initialized = false;
+      let lastBeepSecond = null;
+      let audioContext = null;
+      let audioPrimed = false;
+
+      function primeAudio() {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+
+        if (!audioContext) {
+          audioContext = new AudioCtx();
+        }
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
+
+        audioPrimed = true;
+      }
+
+      window.addEventListener("pointerdown", primeAudio, { passive: true });
+      window.addEventListener("keydown", primeAudio);
+
+      function playBeep() {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+
+        if (!audioContext) {
+          audioContext = new AudioCtx();
+        }
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
+
+        const startAt = audioContext.currentTime;
+        const partials = [
+          { frequency: 880, type: "triangle", gain: 0.12, duration: 0.16 },
+          { frequency: 1320, type: "sine", gain: 0.07, duration: 0.12 }
+        ];
+
+        partials.forEach((partial) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          oscillator.type = partial.type;
+          oscillator.frequency.setValueAtTime(partial.frequency, startAt);
+          gainNode.gain.setValueAtTime(0.0001, startAt);
+          gainNode.gain.exponentialRampToValueAtTime(partial.gain, startAt + 0.01);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, startAt + partial.duration);
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          oscillator.start(startAt);
+          oscillator.stop(startAt + partial.duration);
+        });
+      }
+
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "CNY",
+          maximumFractionDigits: 0
+        })
+          .format(amount || 0)
+          .replace("CN¥", "CNY ");
+      }
+
+      function formatBlindLevelText(level) {
+        if (!level) {
+          return "CURRENT BLIND LEVEL: LEVEL 1 - 10 / 20";
+        }
+
+        const base = `CURRENT BLIND LEVEL: LEVEL ${level.level} - ${level.sb} / ${level.bb}`;
+        return level.ante > 0 ? `${base} - BB ANTE ${level.ante}` : base;
+      }
+
+      function renderEarningsBoard(board) {
+        const rows = Array.isArray(board) && board.length > 0
+          ? board
+          : [{ player: "ZHAO YAO", earnings: 12800 }];
+        const sortedRows = [...rows].sort((a, b) => (Number(b.earnings) || 0) - (Number(a.earnings) || 0));
+
+        pauseEarningsBody.innerHTML = sortedRows
+          .map((entry) => `
+            <tr>
+              <td class="earnings-player">${String(entry.player || "UNKNOWN").toUpperCase()}</td>
+              <td class="earnings-amount">${formatCurrency(entry.earnings)}</td>
+            </tr>
+          `)
+          .join("");
+      }
+
+      function renderPauseOverlay(state) {
+        const isPaused = state.tournamentStatus === "paused";
+        pauseOverlay.classList.toggle("visible", isPaused);
+        pauseOverlay.setAttribute("aria-hidden", isPaused ? "false" : "true");
+        renderEarningsBoard(state.careerEarningsBoard);
+        pauseBlindBarText.textContent = formatBlindLevelText(state.currentLevel);
+      }
+
+      function render(state) {
+        levelText.textContent = `Level ${state.currentLevel.level}`;
+        blindText.textContent = `${state.currentLevel.sb} / ${state.currentLevel.bb} / ${state.currentLevel.ante}`;
+        statusText.textContent = state.tournamentStatus;
+        statusText.className = `status-pill ${state.tournamentStatus}`;
+        levelTimer.textContent = formatTime(state.levelRemaining);
+        thinkingTimer.textContent = formatTime(state.thinkingRemaining);
+        alivePlayers.textContent = state.alivePlayers;
+        thinkingTimer.classList.toggle(
+          "danger-text",
+          state.thinkingRemaining <= 3
+        );
+        renderPauseOverlay(state);
+
+        if (!initialized) {
+          initialized = true;
+          lastBeepSecond = state.levelRemaining;
+          return;
+        }
+
+        if (state.tournamentStatus === "running" && state.levelRemaining > 0 && state.levelRemaining <= 3) {
+          if (state.levelRemaining !== lastBeepSecond) {
+            if (!audioPrimed) {
+              primeAudio();
+            }
+            playBeep();
+          }
+        }
+
+        lastBeepSecond = state.levelRemaining;
+      }
+
+      bindState(render);
+    </script>
+  </body>
+</html>
