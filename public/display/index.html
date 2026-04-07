@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,8 +23,7 @@
       .hero {
         padding: 34px 38px 30px;
         text-align: center;
-        background:
-          linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
+        background: linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
       }
 
       .hero-top {
@@ -104,15 +103,15 @@
 
       .stats {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 20px;
       }
 
       .stat-card {
-        padding: 24px 24px 28px;
+        padding: 24px 28px 28px;
         text-align: center;
-        background:
-          linear-gradient(180deg, rgba(15, 14, 11, 0.98), rgba(9, 9, 10, 0.98));
+        background: linear-gradient(180deg, rgba(15, 14, 11, 0.98), rgba(9, 9, 10, 0.98));
+        overflow: visible;
       }
 
       .stat-card .label {
@@ -121,15 +120,34 @@
       }
 
       .stat-frame {
+        display: grid;
+        justify-items: center;
+        align-items: center;
+        overflow: visible;
         padding-top: 18px;
         border-top: 1px solid rgba(212, 175, 92, 0.18);
       }
 
-      .stat-card .big-timer {
+      .stat-card .big-timer,
+      .stat-card .stat-value {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 12px;
+        text-align: center;
         color: #f7ebcd;
       }
 
-      .stat-card .big-timer.danger-text {
+      .stat-card .big-timer {
+        font-size: clamp(2.8rem, 6.2vw, 5.2rem);
+        line-height: 0.9;
+        letter-spacing: 0.015em;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums lining-nums;
+      }
+
+      .stat-card .big-timer.danger-text,
+      .stat-card .stat-value.danger-text {
         color: #d84a4a;
         text-shadow: 0 0 18px rgba(216, 74, 74, 0.22);
       }
@@ -141,6 +159,27 @@
         letter-spacing: 0.18em;
         text-transform: uppercase;
         color: rgba(232, 216, 180, 0.54);
+      }
+
+      .avg-bb-note {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        color: #f0d99f;
+        text-shadow: 0 0 14px rgba(212, 175, 92, 0.14);
+      }
+
+      .stat-value {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(2.4rem, 5vw, 4.2rem);
+        font-weight: 800;
+        line-height: 1.04;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
       }
 
       .pause-overlay {
@@ -196,19 +235,43 @@
       .pause-content {
         position: relative;
         width: min(92vw, 1180px);
-        min-height: min(88vh, 820px);
         display: grid;
-        grid-template-rows: auto 1fr auto auto;
-        align-items: center;
+        grid-template-rows: auto auto auto;
+        align-content: center;
         justify-items: center;
-        padding: 54px 56px 40px;
+        row-gap: 20px;
+        padding: 42px 56px 34px;
         text-align: center;
+      }
+
+      .pause-slides {
+        position: relative;
+        width: min(72vw, 760px);
+        min-height: 540px;
+      }
+
+      .pause-slide {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        align-content: start;
+        justify-items: center;
+        gap: 16px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(38px);
+        transition: opacity 460ms ease, transform 460ms ease;
+      }
+
+      .pause-slide.active {
+        opacity: 1;
+        transform: translateX(0);
       }
 
       .pause-title-group {
         display: grid;
         justify-items: center;
-        gap: 12px;
+        gap: 8px;
         width: 100%;
       }
 
@@ -221,9 +284,10 @@
       .pause-title {
         margin: 0;
         font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
-        font-size: clamp(3.6rem, 8vw, 7.2rem);
+        font-size: clamp(2.6rem, 6.2vw, 4.9rem);
         font-weight: 800;
-        letter-spacing: 0.12em;
+        line-height: 0.94;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #f5e3b4;
         text-shadow: 0 0 22px rgba(212, 175, 92, 0.14);
@@ -232,27 +296,25 @@
       .pause-subtitle {
         margin: 0;
         font-family: "Inter", "Segoe UI", sans-serif;
-        font-size: clamp(0.95rem, 1.45vw, 1.15rem);
+        font-size: clamp(0.88rem, 1.2vw, 1rem);
         font-weight: 600;
-        letter-spacing: 0.34em;
+        letter-spacing: 0.28em;
         text-transform: uppercase;
         color: rgba(232, 216, 180, 0.72);
       }
 
-      .earnings-panel {
+      .panel-card {
         position: relative;
-        width: min(68vw, 720px);
-        padding: 24px 28px 24px;
+        width: 100%;
+        padding: 20px 26px 20px;
+        margin-bottom: 8px;
         border: 1px solid rgba(212, 175, 92, 0.42);
-        background:
-          linear-gradient(180deg, rgba(12, 12, 14, 0.92), rgba(5, 5, 7, 0.96));
-        box-shadow:
-          inset 0 1px 0 rgba(255, 240, 198, 0.08),
-          0 20px 60px rgba(0, 0, 0, 0.44);
+        background: linear-gradient(180deg, rgba(12, 12, 14, 0.92), rgba(5, 5, 7, 0.96));
+        box-shadow: inset 0 1px 0 rgba(255, 240, 198, 0.08), 0 20px 60px rgba(0, 0, 0, 0.44);
       }
 
-      .earnings-panel::before,
-      .earnings-panel::after {
+      .panel-card::before,
+      .panel-card::after {
         content: "";
         position: absolute;
         left: 18px;
@@ -261,44 +323,40 @@
         background: linear-gradient(90deg, rgba(212, 175, 92, 0), rgba(212, 175, 92, 0.9), rgba(212, 175, 92, 0));
       }
 
-      .earnings-panel::before {
+      .panel-card::before {
         top: 12px;
       }
 
-      .earnings-panel::after {
+      .panel-card::after {
         bottom: 12px;
       }
 
-      .earnings-label {
-        margin: 0 0 10px;
-        font-family: "Inter", "Segoe UI", sans-serif;
-        font-size: clamp(0.88rem, 1.2vw, 1rem);
+      .panel-label {
+        margin: 0 0 8px;
+        font-size: clamp(0.82rem, 1vw, 0.92rem);
         font-weight: 700;
-        letter-spacing: 0.34em;
+        letter-spacing: 0.28em;
         text-transform: uppercase;
         color: rgba(232, 216, 180, 0.74);
       }
 
-      .earnings-divider {
+      .panel-divider {
         width: min(180px, 24vw);
         height: 1px;
-        margin: 0 auto 16px;
+        margin: 0 auto 12px;
         background: linear-gradient(90deg, rgba(212, 175, 92, 0), rgba(212, 175, 92, 0.92), rgba(212, 175, 92, 0));
       }
 
-      .earnings-table-wrap {
-        margin-top: 8px;
-      }
-
-      .earnings-table {
+      .earnings-table,
+      .payouts-table {
         width: 100%;
         border-collapse: collapse;
         table-layout: fixed;
       }
 
-      .earnings-table thead th {
+      .earnings-table thead th,
+      .payouts-table thead th {
         padding: 8px 10px 10px;
-        font-family: "Inter", "Segoe UI", sans-serif;
         font-size: 0.76rem;
         font-weight: 800;
         letter-spacing: 0.22em;
@@ -308,29 +366,37 @@
       }
 
       .earnings-table thead th:first-child,
-      .earnings-table tbody td:first-child {
+      .earnings-table tbody td:first-child,
+      .payouts-table thead th:first-child,
+      .payouts-table tbody td:first-child {
         text-align: left;
       }
 
       .earnings-table thead th:last-child,
-      .earnings-table tbody td:last-child {
+      .earnings-table tbody td:last-child,
+      .payouts-table thead th:last-child,
+      .payouts-table tbody td:last-child {
         text-align: right;
       }
 
-      .earnings-table tbody tr {
+      .earnings-table tbody tr,
+      .payouts-table tbody tr {
         border-bottom: 1px solid rgba(212, 175, 92, 0.12);
       }
 
-      .earnings-table tbody tr:last-child {
+      .earnings-table tbody tr:last-child,
+      .payouts-table tbody tr:last-child {
         border-bottom: none;
       }
 
-      .earnings-table tbody td {
-        padding: 12px 10px;
+      .earnings-table tbody td,
+      .payouts-table tbody td {
+        padding: 10px 10px;
         vertical-align: middle;
       }
 
-      .earnings-player {
+      .earnings-player,
+      .payout-rank {
         font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
         font-size: clamp(1.1rem, 1.9vw, 1.5rem);
         font-weight: 700;
@@ -339,7 +405,8 @@
         color: #f4e5be;
       }
 
-      .earnings-amount {
+      .earnings-amount,
+      .payout-amount {
         font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
         font-size: clamp(1.35rem, 2.6vw, 2rem);
         font-weight: 800;
@@ -351,18 +418,14 @@
 
       .blind-bar {
         width: min(88vw, 980px);
-        padding: 16px 30px;
+        padding: 18px 30px;
         border: 1px solid rgba(38, 27, 8, 0.76);
-        background:
-          linear-gradient(180deg, #d7b36a 0%, #b98d3a 42%, #9f7427 100%);
-        box-shadow:
-          inset 0 1px 0 rgba(255, 244, 216, 0.28),
-          0 16px 36px rgba(0, 0, 0, 0.28);
+        background: linear-gradient(180deg, #d7b36a 0%, #b98d3a 42%, #9f7427 100%);
+        box-shadow: inset 0 1px 0 rgba(255, 244, 216, 0.28), 0 16px 36px rgba(0, 0, 0, 0.28);
       }
 
       .blind-bar-text {
         margin: 0;
-        font-family: "Inter", "Segoe UI", sans-serif;
         font-size: clamp(0.98rem, 1.45vw, 1.22rem);
         font-weight: 800;
         letter-spacing: 0.18em;
@@ -372,12 +435,17 @@
 
       .sponsor-footer {
         margin: 18px 0 0;
-        font-family: "Inter", "Segoe UI", sans-serif;
         font-size: clamp(0.78rem, 1vw, 0.92rem);
         font-weight: 600;
         letter-spacing: 0.3em;
         text-transform: uppercase;
         color: rgba(232, 216, 180, 0.66);
+      }
+
+      @media (max-width: 1100px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
       }
 
       @media (max-width: 900px) {
@@ -397,13 +465,16 @@
 
         .pause-content {
           width: min(96vw, 1180px);
-          min-height: min(92vh, 820px);
-          padding: 36px 18px 26px;
+          padding: 30px 18px 22px;
         }
 
-        .earnings-panel,
+        .pause-slides,
         .blind-bar {
           width: 100%;
+        }
+
+        .pause-slides {
+          min-height: 560px;
         }
       }
     </style>
@@ -421,7 +492,7 @@
             <div id="statusText" class="status-pill waiting">waiting</div>
           </div>
         </div>
-        <div class="blinds" id="blindText">10 / 20 / 0</div>
+        <div class="blinds" id="blindText">10 / 20 / 20</div>
         <div class="hero-foot">
           <div class="blind-caption">SB / BB / ANTE</div>
         </div>
@@ -431,7 +502,7 @@
         <article class="card stat-card">
           <div class="label">Level Clock</div>
           <div class="stat-frame">
-            <div class="big-timer" id="levelTimer">10:00</div>
+            <div class="big-timer" id="levelTimer">08:00</div>
             <div class="stat-note">Blind Countdown</div>
           </div>
         </article>
@@ -449,41 +520,69 @@
             <div class="stat-note">Alive Players</div>
           </div>
         </article>
+        <article class="card stat-card">
+          <div class="label">Average Stack</div>
+          <div class="stat-frame">
+            <div class="stat-value" id="avgStack">1500</div>
+            <div class="avg-bb-note" id="avgBb">75.0 BB</div>
+          </div>
+        </article>
       </section>
     </main>
+
     <div id="pauseOverlay" class="pause-overlay" aria-hidden="true">
       <div class="pause-backdrop"></div>
       <div class="pause-content">
-        <header class="pause-title-group">
-          <div class="pause-kicker"></div>
-          <h2 class="pause-title">CAREER EARNINGS</h2>
-          <p class="pause-subtitle">2026 ZHAOYAO CUP SNG SERIES</p>
-          <div class="pause-kicker"></div>
-        </header>
+        <div class="pause-slides">
+          <section id="careerSlide" class="pause-slide active">
+            <header class="pause-title-group">
+              <div class="pause-kicker"></div>
+              <h2 class="pause-title">CAREER EARNINGS</h2>
+              <p class="pause-subtitle">2026 ZHAOYAO CUP SNG SERIES</p>
+              <div class="pause-kicker"></div>
+            </header>
 
-        <section class="earnings-panel">
-          <p class="earnings-label">CAREER EARNINGS</p>
-          <div class="earnings-divider"></div>
-          <div class="earnings-table-wrap">
-            <table class="earnings-table">
-              <thead>
-                <tr>
-                  <th>PLAYER</th>
-                  <th>EARNINGS</th>
-                </tr>
-              </thead>
-              <tbody id="pauseEarningsBody">
-                <tr>
-                  <td class="earnings-player">ZHAO YAO</td>
-                  <td class="earnings-amount">CNY 12,800</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+            <section class="panel-card">
+              <p class="panel-label">CAREER EARNINGS</p>
+              <div class="panel-divider"></div>
+              <table class="earnings-table">
+                <thead>
+                  <tr>
+                    <th>PLAYER</th>
+                    <th>EARNINGS</th>
+                  </tr>
+                </thead>
+                <tbody id="pauseEarningsBody"></tbody>
+              </table>
+            </section>
+          </section>
+
+          <section id="payoutsSlide" class="pause-slide">
+            <header class="pause-title-group">
+              <div class="pause-kicker"></div>
+              <h2 class="pause-title">PAYOUTS</h2>
+              <p class="pause-subtitle">2026 ZHAOYAO CUP SNG SERIES</p>
+              <div class="pause-kicker"></div>
+            </header>
+
+            <section class="panel-card">
+              <p class="panel-label">PAYOUTS</p>
+              <div class="panel-divider"></div>
+              <table class="payouts-table">
+                <thead>
+                  <tr>
+                    <th>PLACE</th>
+                    <th>AMOUNT</th>
+                  </tr>
+                </thead>
+                <tbody id="pausePayoutsBody"></tbody>
+              </table>
+            </section>
+          </section>
+        </div>
 
         <section class="blind-bar">
-          <p id="pauseBlindBarText" class="blind-bar-text">CURRENT BLIND LEVEL: LEVEL 1 - 10 / 20</p>
+          <p id="pauseBlindBarText" class="blind-bar-text">CURRENT BLIND LEVEL: LEVEL 1 - 10 / 20 - BB ANTE 20</p>
         </section>
 
         <footer class="sponsor-footer">VENUE PROVIDED BY ZHAOYAO TAPROOM</footer>
@@ -499,13 +598,23 @@
       const levelTimer = document.getElementById("levelTimer");
       const thinkingTimer = document.getElementById("thinkingTimer");
       const alivePlayers = document.getElementById("alivePlayers");
+      const avgStack = document.getElementById("avgStack");
+      const avgBb = document.getElementById("avgBb");
       const pauseOverlay = document.getElementById("pauseOverlay");
       const pauseEarningsBody = document.getElementById("pauseEarningsBody");
+      const pausePayoutsBody = document.getElementById("pausePayoutsBody");
       const pauseBlindBarText = document.getElementById("pauseBlindBarText");
+      const careerSlide = document.getElementById("careerSlide");
+      const payoutsSlide = document.getElementById("payoutsSlide");
+
       let initialized = false;
       let lastBeepSecond = null;
       let audioContext = null;
       let audioPrimed = false;
+      let pauseCarouselTimer = null;
+      let pauseSequence = [{ type: "career", page: 0 }, { type: "payouts" }];
+      let pauseSequenceIndex = 0;
+      let currentCareerRows = [{ player: "UNKNOWN", earnings: 0 }];
 
       function primeAudio() {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -558,14 +667,15 @@
         });
       }
 
-      function formatCurrency(amount) {
+      function formatNumber(value, maximumFractionDigits = 0) {
         return new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "CNY",
-          maximumFractionDigits: 0
-        })
-          .format(amount || 0)
-          .replace("CN¥", "CNY ");
+          maximumFractionDigits,
+          minimumFractionDigits: maximumFractionDigits
+        }).format(Number(value) || 0);
+      }
+
+      function formatCurrency(amount) {
+        return `CNY ${formatNumber(amount || 0, 0)}`;
       }
 
       function formatBlindLevelText(level) {
@@ -579,11 +689,17 @@
 
       function renderEarningsBoard(board) {
         const rows = Array.isArray(board) && board.length > 0
-          ? board
-          : [{ player: "ZHAO YAO", earnings: 12800 }];
-        const sortedRows = [...rows].sort((a, b) => (Number(b.earnings) || 0) - (Number(a.earnings) || 0));
+          ? [...board].sort((a, b) => (Number(b.earnings) || 0) - (Number(a.earnings) || 0))
+          : [{ player: "UNKNOWN", earnings: 0 }];
 
-        pauseEarningsBody.innerHTML = sortedRows
+        return rows.slice(0, 10);
+      }
+
+      function renderCareerPage(rows, pageIndex) {
+        const start = pageIndex * 5;
+        const currentPageRows = rows.slice(start, start + 5);
+
+        pauseEarningsBody.innerHTML = currentPageRows
           .map((entry) => `
             <tr>
               <td class="earnings-player">${String(entry.player || "UNKNOWN").toUpperCase()}</td>
@@ -593,26 +709,106 @@
           .join("");
       }
 
+      function renderPayouts(payouts, startingEntries) {
+        const rows = startingEntries <= 7
+          ? [
+              { label: "1ST", value: payouts.first },
+              { label: "2ND", value: payouts.second }
+            ]
+          : [
+              { label: "1ST", value: payouts.first },
+              { label: "2ND", value: payouts.second },
+              { label: "3RD", value: payouts.third }
+            ];
+
+        pausePayoutsBody.innerHTML = rows
+          .map((entry) => `
+            <tr>
+              <td class="payout-rank">${entry.label}</td>
+              <td class="payout-amount">${formatCurrency(entry.value)}</td>
+            </tr>
+          `)
+          .join("");
+      }
+
+      function getPauseDuration(entry) {
+        return entry.type === "payouts" ? 6500 : 5500;
+      }
+
+      function renderPauseSlide() {
+        const current = pauseSequence[pauseSequenceIndex] || { type: "career", page: 0 };
+        careerSlide.classList.toggle("active", current.type === "career");
+        payoutsSlide.classList.toggle("active", current.type === "payouts");
+      }
+
+      function clearPauseCarousel() {
+        if (!pauseCarouselTimer) return;
+        window.clearTimeout(pauseCarouselTimer);
+        pauseCarouselTimer = null;
+      }
+
+      function queuePauseCarousel() {
+        clearPauseCarousel();
+        const current = pauseSequence[pauseSequenceIndex] || { type: "career", page: 0 };
+        pauseCarouselTimer = window.setTimeout(() => {
+          pauseSequenceIndex = (pauseSequenceIndex + 1) % pauseSequence.length;
+          const next = pauseSequence[pauseSequenceIndex] || pauseSequence[0];
+          if (next.type === "career") {
+            renderCareerPage(currentCareerRows, next.page);
+          }
+          renderPauseSlide();
+          queuePauseCarousel();
+        }, getPauseDuration(current));
+      }
+
+      function stopPauseCarousel() {
+        clearPauseCarousel();
+      }
+
       function renderPauseOverlay(state) {
         const isPaused = state.tournamentStatus === "paused";
         pauseOverlay.classList.toggle("visible", isPaused);
         pauseOverlay.setAttribute("aria-hidden", isPaused ? "false" : "true");
-        renderEarningsBoard(state.careerEarningsBoard);
+        const earningsRows = renderEarningsBoard(state.careerEarningsBoard);
+        currentCareerRows = earningsRows;
+        const careerPageCount = Math.max(1, Math.ceil(earningsRows.length / 5));
+        pauseSequence = Array.from({ length: careerPageCount }, (_, index) => ({ type: "career", page: index }));
+        pauseSequence.push({ type: "payouts" });
+        const activeEntry = pauseSequence[pauseSequenceIndex] || pauseSequence[0];
+        renderCareerPage(earningsRows, activeEntry.type === "career" ? activeEntry.page : 0);
+        renderPayouts(state.payouts || { first: 0, second: 0, third: 0 }, state.startingEntries || 6);
         pauseBlindBarText.textContent = formatBlindLevelText(state.currentLevel);
+
+        if (isPaused) {
+          const currentEntry = pauseSequence[pauseSequenceIndex];
+          if (!currentEntry || currentEntry.type === "payouts" && !pauseSequence.some((entry) => entry.type === "payouts")) {
+            pauseSequenceIndex = 0;
+          }
+          const normalizedEntry = pauseSequence[pauseSequenceIndex] || pauseSequence[0];
+          if (normalizedEntry.type === "career") {
+            renderCareerPage(earningsRows, normalizedEntry.page);
+          }
+          renderPauseSlide();
+          queuePauseCarousel();
+        } else {
+          stopPauseCarousel();
+          pauseSequenceIndex = 0;
+          renderCareerPage(earningsRows, 0);
+          renderPauseSlide();
+        }
       }
 
       function render(state) {
-        levelText.textContent = `Level ${state.currentLevel.level}`;
+        levelText.textContent = `LEVEL ${state.currentLevel.level}`;
         blindText.textContent = `${state.currentLevel.sb} / ${state.currentLevel.bb} / ${state.currentLevel.ante}`;
         statusText.textContent = state.tournamentStatus;
         statusText.className = `status-pill ${state.tournamentStatus}`;
         levelTimer.textContent = formatTime(state.levelRemaining);
         thinkingTimer.textContent = formatTime(state.thinkingRemaining);
         alivePlayers.textContent = state.alivePlayers;
-        thinkingTimer.classList.toggle(
-          "danger-text",
-          state.thinkingRemaining <= 3
-        );
+        avgStack.textContent = formatNumber(state.avgStack || 0, 0);
+        avgBb.textContent = `${formatNumber(state.avgBB || 0, 1)} BB`;
+        thinkingTimer.classList.toggle("danger-text", state.thinkingRemaining <= 3);
         renderPauseOverlay(state);
 
         if (!initialized) {

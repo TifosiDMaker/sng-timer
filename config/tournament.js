@@ -13,13 +13,18 @@ const blindLevels = [
 
 module.exports = {
   blindLevels,
+  bountyRate: 0.1,
   careerEarningsBoard: [
     { player: "T ZONG", earnings: 80 },
     { player: "YAO JINDA", earnings: 80 },
     { player: "YA SEN", earnings: 40 },
-    { player: "LI JIAHUI", earnings: 40 }
+    { player: "LI JIAHUI", earnings: 40 },
+    { player: "JHON DON", earnings: 20 },
+    { player: "JANE DON", earnings: 10 }
   ],
+  defaultBuyIn: 100,
   levelDuration: 480,
+  startingStack: 1500,
   thinkingDuration: 20,
   timeCardExtra: 30
 };

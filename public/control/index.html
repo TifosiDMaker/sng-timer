@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -16,8 +16,7 @@
 
       .control-hero {
         padding: 26px 24px 24px;
-        background:
-          linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
+        background: linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
       }
 
       .control-top {
@@ -81,6 +80,11 @@
         color: var(--muted);
       }
 
+      .section-frame {
+        padding-top: 16px;
+        border-top: 1px solid rgba(212, 175, 92, 0.14);
+      }
+
       .status-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -110,26 +114,28 @@
         text-shadow: 0 0 18px rgba(216, 74, 74, 0.22);
       }
 
-      .primary-grid {
+      .primary-grid,
+      .thinking-grid,
+      .manual-grid,
+      .management-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
       }
 
+      .thinking-grid .action-button,
       .primary-grid .action-button {
-        min-height: 96px;
+        min-height: 92px;
       }
 
-      .primary-grid .primary-reset {
-        min-height: 124px;
-        font-size: 1.14rem;
-        grid-column: 1 / -1;
+      .primary-grid .action-button:first-child,
+      .primary-grid .action-button:nth-child(2) {
+        min-height: 112px;
       }
 
-      .management-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+      .manual-grid .action-button,
+      .management-grid .action-button {
+        min-height: 72px;
       }
 
       .status-header {
@@ -149,11 +155,6 @@
         text-transform: uppercase;
       }
 
-      .section-frame {
-        padding-top: 16px;
-        border-top: 1px solid rgba(212, 175, 92, 0.14);
-      }
-
       .management-grid .action-button:last-child {
         grid-column: 1 / -1;
       }
@@ -162,10 +163,6 @@
         .control-top {
           flex-direction: column;
           align-items: stretch;
-        }
-
-        .primary-grid {
-          grid-template-columns: 1fr 1fr;
         }
       }
     </style>
@@ -183,7 +180,7 @@
         </div>
         <div class="control-level-strip">
           <span class="label">Current Blind Level</span>
-          <strong id="blindText">10 / 20 / 0</strong>
+          <strong id="blindText">10 / 20 / 20</strong>
         </div>
       </section>
 
@@ -194,43 +191,73 @@
         <div class="status-grid">
           <div class="status-item">
             <span class="label">Level</span>
-            <strong id="levelText">Level 1</strong>
+            <strong id="levelText">LEVEL 1</strong>
           </div>
           <div class="status-item">
             <span class="label">Players Left</span>
             <strong id="alivePlayers">6</strong>
           </div>
           <div class="status-item">
+            <span class="label">Re-Entries</span>
+            <strong id="reentriesText">0</strong>
+          </div>
+          <div class="status-item">
+            <span class="label">Prize Pool</span>
+            <strong id="prizePoolText">CNY 600</strong>
+          </div>
+          <div class="status-item">
             <span class="label">Level Clock</span>
-            <strong id="levelTimer">10:00</strong>
+            <strong id="levelTimer">08:00</strong>
           </div>
           <div class="status-item">
             <span class="label">Action Clock</span>
             <strong id="thinkingTimer">00:20</strong>
           </div>
           <div class="status-item">
-            <span class="label">Time Card</span>
-            <strong id="timeCardText">+30 秒</strong>
+            <span class="label">Average Stack</span>
+            <strong id="avgStackText">1500</strong>
           </div>
           <div class="status-item">
-            <span class="label">Blind Format</span>
-            <strong>SB / BB / ANTE</strong>
+            <span class="label">Average BB</span>
+            <strong id="avgBbText">75.0 BB</strong>
           </div>
         </div>
       </section>
 
       <section class="card section">
-        <h2 class="section-title">Primary Actions</h2>
+        <h2 class="section-title">Thinking Clock</h2>
         <div class="section-frame">
-          <div class="primary-grid">
-            <button class="action-button success primary-reset" data-event="resetThinking">Reset Thinking And Start</button>
+          <div class="thinking-grid">
+            <button class="action-button success" data-event="startThinking">Start Thinking</button>
+            <button class="action-button success" data-event="resetThinking">Reset Thinking</button>
+            <button class="action-button warning" data-event="pauseThinking">Pause Thinking</button>
             <button class="action-button success" data-event="useTimeCard">Use Time Card</button>
-            <button class="action-button success" data-event="playerAdd">Player +1</button>
-            <button class="action-button danger" id="playerRemoveBtn">Player -1</button>
           </div>
-          <div class="note">Thinking clock follows reset action and tournament pause or resume.</div>
         </div>
       </section>
+
+      <section class="card section">
+        <h2 class="section-title">Player Flow</h2>
+        <div class="section-frame">
+          <div class="primary-grid">
+            <button class="action-button danger" id="eliminatePlayerBtn">Eliminate Player</button>
+            <button class="action-button success" data-event="reenterPlayer">Re-Enter Player</button>
+          </div>
+          <div class="note">Eliminate decreases alive players. Re-enter increases both re-entries and alive players.</div>
+        </div>
+      </section>
+
+      <details class="card" open>
+        <summary>Manual Adjust</summary>
+        <div class="details-body">
+          <div class="manual-grid">
+            <button class="action-button secondary" data-adjust-alive="1">Alive +1</button>
+            <button class="action-button secondary" data-adjust-alive="-1">Alive -1</button>
+            <button class="action-button secondary" data-adjust-reentries="1">Re-Entry +1</button>
+            <button class="action-button secondary" data-adjust-reentries="-1">Re-Entry -1</button>
+          </div>
+        </div>
+      </details>
 
       <details class="card" open>
         <summary>Management</summary>
@@ -255,20 +282,45 @@
       const levelTimer = document.getElementById("levelTimer");
       const thinkingTimer = document.getElementById("thinkingTimer");
       const alivePlayers = document.getElementById("alivePlayers");
-      const timeCardText = document.getElementById("timeCardText");
+      const reentriesText = document.getElementById("reentriesText");
+      const prizePoolText = document.getElementById("prizePoolText");
+      const avgStackText = document.getElementById("avgStackText");
+      const avgBbText = document.getElementById("avgBbText");
       const toggleTournamentBtn = document.getElementById("toggleTournamentBtn");
       const resetTournamentBtn = document.getElementById("resetTournamentBtn");
-      const playerRemoveBtn = document.getElementById("playerRemoveBtn");
-
+      const eliminatePlayerBtn = document.getElementById("eliminatePlayerBtn");
       let latestState = null;
 
-      function emitEvent(eventName) {
-        socket.emit(eventName);
+      function emitEvent(eventName, payload) {
+        socket.emit(eventName, payload);
+      }
+
+      function formatNumber(value, maximumFractionDigits = 0) {
+        return new Intl.NumberFormat("en-US", {
+          maximumFractionDigits,
+          minimumFractionDigits: maximumFractionDigits
+        }).format(Number(value) || 0);
+      }
+
+      function formatCurrency(amount) {
+        return `CNY ${formatNumber(amount || 0, 0)}`;
       }
 
       document.querySelectorAll("[data-event]").forEach((button) => {
         button.addEventListener("click", () => {
           emitEvent(button.dataset.event);
+        });
+      });
+
+      document.querySelectorAll("[data-adjust-alive]").forEach((button) => {
+        button.addEventListener("click", () => {
+          emitEvent("adjustAlivePlayers", Number(button.dataset.adjustAlive));
+        });
+      });
+
+      document.querySelectorAll("[data-adjust-reentries]").forEach((button) => {
+        button.addEventListener("click", () => {
+          emitEvent("adjustReentries", Number(button.dataset.adjustReentries));
         });
       });
 
@@ -279,37 +331,36 @@
       });
 
       resetTournamentBtn.addEventListener("click", () => {
-        const confirmed = window.confirm("确认重置整场比赛吗？这会恢复所有计时与盲注状态。");
+        const confirmed = window.confirm("Confirm reset tournament? This keeps the session setup but resets timers and counts.");
         if (confirmed) {
           emitEvent("resetTournament");
         }
       });
 
-      playerRemoveBtn.addEventListener("click", () => {
+      eliminatePlayerBtn.addEventListener("click", () => {
         if (!latestState || latestState.alivePlayers <= 0) return;
-        const confirmed = window.confirm("确认存活玩家 -1 吗？");
+        const confirmed = window.confirm("Confirm eliminate player?");
         if (confirmed) {
-          emitEvent("playerRemove");
+          emitEvent("eliminatePlayer");
         }
       });
 
       function render(state) {
         latestState = state;
-
-        levelText.textContent = `Level ${state.currentLevel.level}`;
+        levelText.textContent = `LEVEL ${state.currentLevel.level}`;
         blindText.textContent = `${state.currentLevel.sb} / ${state.currentLevel.bb} / ${state.currentLevel.ante}`;
         statusText.textContent = state.tournamentStatus;
         statusText.className = `status-pill ${state.tournamentStatus}`;
         levelTimer.textContent = formatTime(state.levelRemaining);
         thinkingTimer.textContent = formatTime(state.thinkingRemaining);
         alivePlayers.textContent = state.alivePlayers;
-        timeCardText.textContent = `+${state.timeCardExtra} 秒`;
-        thinkingTimer.classList.toggle(
-          "danger-text",
-          state.thinkingRemaining <= 3
-        );
+        reentriesText.textContent = state.reentries;
+        prizePoolText.textContent = formatCurrency(state.prizePool);
+        avgStackText.textContent = formatNumber(state.avgStack, 0);
+        avgBbText.textContent = `${formatNumber(state.avgBB, 1)} BB`;
+        thinkingTimer.classList.toggle("danger-text", state.thinkingRemaining <= 3);
 
-        toggleTournamentBtn.textContent = state.tournamentStatus === "running" ? "暂停比赛" : "继续比赛";
+        toggleTournamentBtn.textContent = state.tournamentStatus === "running" ? "Pause Tournament" : "Resume Tournament";
         toggleTournamentBtn.disabled = state.tournamentStatus === "waiting" || state.tournamentStatus === "ended";
       }
 

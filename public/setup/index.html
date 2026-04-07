@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNG Session Setup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .setup-shell {
+        width: min(980px, calc(100% - 24px));
+        display: grid;
+        gap: 18px;
+      }
+
+      .setup-hero {
+        padding: 32px 34px 28px;
+        background: linear-gradient(180deg, rgba(16, 14, 11, 0.98), rgba(8, 8, 9, 0.98));
+      }
+
+      .setup-kicker {
+        margin-bottom: 12px;
+      }
+
+      .setup-title {
+        margin: 0;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: clamp(3rem, 6vw, 5rem);
+        line-height: 0.95;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #f6e9c7;
+      }
+
+      .setup-subtitle {
+        margin: 14px 0 0;
+        max-width: 720px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        line-height: 1.7;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.7);
+      }
+
+      .setup-card {
+        padding: 24px;
+      }
+
+      .setup-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .field {
+        display: grid;
+        gap: 10px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      .field-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .setup-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .setup-submit {
+        min-width: 280px;
+        min-height: 60px;
+      }
+
+      .helper-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 20px;
+      }
+
+      .helper-box {
+        padding: 14px 16px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(212, 175, 92, 0.16);
+        background: rgba(255, 239, 195, 0.04);
+      }
+
+      .helper-box strong {
+        display: block;
+        margin-top: 8px;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: 1.8rem;
+        line-height: 0.96;
+        letter-spacing: 0.06em;
+        color: #f7ebcd;
+      }
+
+      @media (max-width: 760px) {
+        .setup-grid,
+        .helper-row {
+          grid-template-columns: 1fr;
+        }
+
+        .setup-actions {
+          justify-content: stretch;
+        }
+
+        .setup-submit {
+          width: 100%;
+          min-width: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="setup-shell">
+      <section class="card setup-hero">
+        <div class="label setup-kicker">Session Initialization</div>
+        <h1 class="setup-title">Create Tournament Session</h1>
+        <p class="setup-subtitle">
+          Configure the table once, enter the tournament display, and keep all match state synchronized from the server.
+        </p>
+      </section>
+
+      <section class="card setup-card">
+        <form action="/setup" method="post" id="setupForm">
+          <div class="setup-grid">
+            <label class="field">
+              <span class="field-label">Starting Players</span>
+              <select id="startingEntries" name="startingEntries" class="broadcast-select">
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Level Duration (Minutes)</span>
+              <input
+                id="levelDurationMinutes"
+                name="levelDurationMinutes"
+                class="broadcast-input"
+                type="number"
+                min="1"
+                max="60"
+                step="1"
+                value="8"
+                required
+              />
+            </label>
+
+            <div class="field">
+              <span class="field-label">Starting Stack</span>
+              <div class="broadcast-static">1500</div>
+            </div>
+
+            <label class="field">
+              <span class="field-label">Buy-In</span>
+              <input
+                id="buyIn"
+                name="buyIn"
+                class="broadcast-input"
+                type="number"
+                min="0"
+                step="1"
+                value="100"
+                required
+              />
+            </label>
+
+            <div class="field full">
+              <span class="broadcast-meta">
+                DEFAULT LEVEL DURATION IS 8 MINUTES FOR 6 TO 7 PLAYERS, AND 10 MINUTES FOR 8 TO 10 PLAYERS.
+              </span>
+            </div>
+          </div>
+
+          <div class="helper-row">
+            <div class="helper-box">
+              <span class="field-label">Payout Model</span>
+              <strong id="payoutPreview">65 / 35</strong>
+            </div>
+            <div class="helper-box">
+              <span class="field-label">Blind Clock</span>
+              <strong id="clockPreview">8 MIN</strong>
+            </div>
+            <div class="helper-box">
+              <span class="field-label">Format</span>
+              <strong>SNG</strong>
+            </div>
+          </div>
+
+          <div class="setup-actions">
+            <button type="submit" class="action-button success setup-submit">Enter Tournament</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      const startingEntries = document.getElementById("startingEntries");
+      const levelDurationMinutes = document.getElementById("levelDurationMinutes");
+      const payoutPreview = document.getElementById("payoutPreview");
+      const clockPreview = document.getElementById("clockPreview");
+      let durationTouched = false;
+
+      function getDefaultMinutes(players) {
+        return players <= 7 ? 8 : 10;
+      }
+
+      function updateSetupPreview() {
+        const players = Number(startingEntries.value);
+        const defaultMinutes = getDefaultMinutes(players);
+
+        if (!durationTouched) {
+          levelDurationMinutes.value = defaultMinutes;
+        }
+
+        payoutPreview.textContent = players <= 7 ? "65 / 35" : "50 / 30 / 20";
+        clockPreview.textContent = `${levelDurationMinutes.value} MIN`;
+      }
+
+      startingEntries.addEventListener("change", updateSetupPreview);
+      levelDurationMinutes.addEventListener("input", () => {
+        durationTouched = true;
+        clockPreview.textContent = `${levelDurationMinutes.value} MIN`;
+      });
+
+      updateSetupPreview();
+    </script>
+  </body>
+</html>
