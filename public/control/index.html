@@ -128,6 +128,12 @@
         min-height: 92px;
       }
 
+      .thinking-grid .action-button[data-event="resetThinking"] {
+        min-height: 126px;
+        font-size: 1.14rem;
+        grid-column: 1 / -1;
+      }
+
       .primary-grid .action-button:first-child,
       .primary-grid .action-button:nth-child(2) {
         min-height: 112px;
@@ -228,8 +234,8 @@
         <h2 class="section-title">Thinking Clock</h2>
         <div class="section-frame">
           <div class="thinking-grid">
-            <button class="action-button success" data-event="startThinking">Start Thinking</button>
             <button class="action-button success" data-event="resetThinking">Reset Thinking</button>
+            <button class="action-button success" data-event="startThinking">Start Thinking</button>
             <button class="action-button warning" data-event="pauseThinking">Pause Thinking</button>
             <button class="action-button success" data-event="useTimeCard">Use Time Card</button>
           </div>
