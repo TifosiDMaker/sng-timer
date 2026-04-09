@@ -101,12 +101,8 @@ function recomputeDerivedState(targetState) {
     Math.max(0, Number(targetState.reentries) || 0);
   const safeAlivePlayers = Math.max(0, Number(targetState.alivePlayers) || 0);
   const totalCollected = totalEntries * (Number(targetState.buyIn) || 0);
-  const bountyRemoved = Math.round(
-    Math.max(0, Number(targetState.reentries) || 0) *
-      (Number(targetState.buyIn) || 0) *
-      (Number(targetState.bountyRate) || 0)
-  );
-  const prizePool = Math.max(0, Math.round(totalCollected - bountyRemoved));
+  const bountyRemoved = 0;
+  const prizePool = Math.max(0, Math.round(totalCollected));
   const totalChips = totalEntries * (Number(targetState.startingStack) || 0);
   const avgStack = safeAlivePlayers > 0 ? totalChips / safeAlivePlayers : 0;
   const bb = Number(targetState.currentLevel?.bb) || 0;

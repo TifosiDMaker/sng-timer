@@ -101,6 +101,39 @@
         color: rgba(232, 216, 180, 0.72);
       }
 
+      .next-level-row {
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .next-level-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 18px;
+        border: 1px solid rgba(212, 175, 92, 0.18);
+        background: rgba(255, 239, 195, 0.05);
+      }
+
+      .next-level-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(232, 216, 180, 0.64);
+      }
+
+      .next-level-value {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-size: 1.38rem;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #f3dfb0;
+      }
+
       .stats {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -511,6 +544,12 @@
         <div class="hero-foot">
           <div class="blind-caption">SB / BB / ANTE</div>
         </div>
+        <div class="next-level-row">
+          <div class="next-level-chip">
+            <span class="next-level-label">Next Level</span>
+            <span class="next-level-value" id="nextLevelText">20 / 40 / 40</span>
+          </div>
+        </div>
       </section>
 
       <section class="stats">
@@ -618,6 +657,7 @@
       const alivePlayers = document.getElementById("alivePlayers");
       const avgStack = document.getElementById("avgStack");
       const avgBb = document.getElementById("avgBb");
+      const nextLevelText = document.getElementById("nextLevelText");
       const pauseOverlay = document.getElementById("pauseOverlay");
       const pauseEarningsBody = document.getElementById("pauseEarningsBody");
       const pausePayoutsBody = document.getElementById("pausePayoutsBody");
@@ -703,6 +743,11 @@
 
         const base = `CURRENT BLIND LEVEL: LEVEL ${level.level} - ${level.sb} / ${level.bb}`;
         return level.ante > 0 ? `${base} - BB ANTE ${level.ante}` : base;
+      }
+
+      function formatBlindShort(level) {
+        if (!level) return "FINAL LEVEL";
+        return `${level.sb} / ${level.bb} / ${level.ante}`;
       }
 
       function renderEarningsBoard(board) {
@@ -819,6 +864,8 @@
       function render(state) {
         levelText.textContent = `LEVEL ${state.currentLevel.level}`;
         blindText.textContent = `${state.currentLevel.sb} / ${state.currentLevel.bb} / ${state.currentLevel.ante}`;
+        const nextLevel = state.blindLevels[state.blindLevelIndex + 1];
+        nextLevelText.textContent = nextLevel ? formatBlindShort(nextLevel) : "FINAL LEVEL";
         statusText.textContent = state.tournamentStatus;
         statusText.className = `status-pill ${state.tournamentStatus}`;
         levelTimer.textContent = formatTime(state.levelRemaining);
